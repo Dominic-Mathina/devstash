@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import {
   LayoutGrid,
   FolderOpen,
@@ -6,27 +8,19 @@ import {
   ArrowRight,
 } from "lucide-react";
 import Link from "next/link";
-import { mockItems, mockItemTypes, mockItemTypeCounts } from "@/lib/mock-data";
 import { getCollections } from "@/lib/db/collections";
+import { getDashboardItems } from "@/lib/db/items";
 import CollectionCard from "@/components/dashboard/CollectionCard";
 import ItemCard from "@/components/dashboard/ItemCard";
 
-const totalItems = Object.values(mockItemTypeCounts).reduce((a, b) => a + b, 0);
-const favoriteItems = mockItems.filter((i) => i.isFavorite).length;
-
-const pinnedItems = mockItems.filter((i) => i.isPinned);
-
-const recentItems = [...mockItems]
-  .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
-  .slice(0, 10);
-
 export default async function DashboardPage() {
-  const collections = await getCollections();
+  const [collections, { pinned, recent, totalCount, favoriteCount }] =
+    await Promise.all([getCollections(), getDashboardItems()]);
 
   const stats = [
-    { label: "Total Items", value: totalItems, icon: LayoutGrid },
+    { label: "Total Items", value: totalCount, icon: LayoutGrid },
     { label: "Collections", value: collections.length, icon: FolderOpen },
-    { label: "Favorite Items", value: favoriteItems, icon: Star },
+    { label: "Favorite Items", value: favoriteCount, icon: Star },
     { label: "Favorite Collections", value: collections.filter((c) => c.isFavorite).length, icon: Pin },
   ];
 
@@ -74,19 +68,15 @@ export default async function DashboardPage() {
       </section>
 
       {/* Pinned */}
-      {pinnedItems.length > 0 && (
+      {pinned.length > 0 && (
         <section>
           <div className="flex items-center gap-2 mb-4">
             <Pin className="h-4 w-4 text-muted-foreground" />
             <h2 className="text-base font-semibold">Pinned</h2>
           </div>
           <div className="flex flex-col gap-3">
-            {pinnedItems.map((item) => (
-              <ItemCard
-                key={item.id}
-                item={item}
-                itemType={mockItemTypes.find((t) => t.id === item.itemTypeId)}
-              />
+            {pinned.map((item) => (
+              <ItemCard key={item.id} item={item} itemType={item.type} />
             ))}
           </div>
         </section>
@@ -104,12 +94,8 @@ export default async function DashboardPage() {
           </Link>
         </div>
         <div className="flex flex-col gap-3">
-          {recentItems.map((item) => (
-            <ItemCard
-              key={item.id}
-              item={item}
-              itemType={mockItemTypes.find((t) => t.id === item.itemTypeId)}
-            />
+          {recent.map((item) => (
+            <ItemCard key={item.id} item={item} itemType={item.type} />
           ))}
         </div>
       </section>
