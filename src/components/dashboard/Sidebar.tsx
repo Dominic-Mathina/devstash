@@ -14,14 +14,10 @@ import {
   Settings,
   X,
   ChevronDown,
+  ArrowRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import {
-  mockItemTypes,
-  mockItemTypeCounts,
-  mockCollections,
-  mockUser,
-} from "@/lib/mock-data";
+import { SidebarData } from "@/lib/db/items";
 import { Button } from "@/components/ui/button";
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
@@ -38,13 +34,13 @@ interface SidebarProps {
   collapsed: boolean;
   onToggle: () => void;
   isMobile?: boolean;
+  sidebarData: SidebarData;
 }
 
-export default function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps) {
-  const favoriteCollections = mockCollections.filter((c) => c.isFavorite);
-  const recentCollections = mockCollections
-    .filter((c) => !c.isFavorite)
-    .sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+export default function Sidebar({ collapsed, onToggle, isMobile, sidebarData }: SidebarProps) {
+  const { itemTypes, collections } = sidebarData;
+  const favoriteCollections = collections.filter((c) => c.isFavorite);
+  const recentCollections = collections.filter((c) => !c.isFavorite);
 
   return (
     <div
@@ -85,35 +81,29 @@ export default function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps)
             </div>
           )}
           <ul className="space-y-0.5">
-            {mockItemTypes.map((type) => {
-              const count =
-                mockItemTypeCounts[
-                  type.name as keyof typeof mockItemTypeCounts
-                ];
-              return (
-                <li key={type.id}>
-                  <Link
-                    href={`/items/${type.name}s`}
-                    className={cn(
-                      "flex items-center gap-3 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors",
-                      collapsed ? "justify-center px-2" : "px-4"
-                    )}
-                  >
-                    <span style={{ color: type.color }}>
-                      {TYPE_ICONS[type.name]}
-                    </span>
-                    {!collapsed && (
-                      <>
-                        <span className="flex-1 capitalize">{type.name}s</span>
-                        <span className="text-xs text-muted-foreground">
-                          {count}
-                        </span>
-                      </>
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
+            {itemTypes.map((type) => (
+              <li key={type.id}>
+                <Link
+                  href={`/items/${type.name}`}
+                  className={cn(
+                    "flex items-center gap-3 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors",
+                    collapsed ? "justify-center px-2" : "px-4"
+                  )}
+                >
+                  <span style={{ color: type.color }}>
+                    {TYPE_ICONS[type.name]}
+                  </span>
+                  {!collapsed && (
+                    <>
+                      <span className="flex-1 capitalize">{type.name}s</span>
+                      <span className="text-xs text-muted-foreground">
+                        {type.count}
+                      </span>
+                    </>
+                  )}
+                </Link>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -127,41 +117,59 @@ export default function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps)
               <ChevronDown className="h-3 w-3 text-muted-foreground" />
             </div>
 
-            <p className="px-4 mt-3 mb-0.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-              Favorites
-            </p>
-            <ul className="space-y-0.5">
-              {favoriteCollections.map((c) => (
-                <li key={c.id}>
-                  <Link
-                    href={`/collections/${c.id}`}
-                    className="flex items-center gap-3 px-4 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors"
-                  >
-                    <span className="flex-1 truncate">{c.name}</span>
-                    <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400 shrink-0" />
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {favoriteCollections.length > 0 && (
+              <>
+                <p className="px-4 mt-3 mb-0.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Favorites
+                </p>
+                <ul className="space-y-0.5">
+                  {favoriteCollections.map((c) => (
+                    <li key={c.id}>
+                      <Link
+                        href={`/collections/${c.id}`}
+                        className="flex items-center gap-3 px-4 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors"
+                      >
+                        <span className="flex-1 truncate">{c.name}</span>
+                        <Star className="h-3.5 w-3.5 text-yellow-400 fill-yellow-400 shrink-0" />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
 
-            <p className="px-4 mt-3 mb-0.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
-              All Collections
-            </p>
-            <ul className="space-y-0.5">
-              {recentCollections.map((c) => (
-                <li key={c.id}>
-                  <Link
-                    href={`/collections/${c.id}`}
-                    className="flex items-center gap-3 px-4 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors"
-                  >
-                    <span className="flex-1 truncate">{c.name}</span>
-                    <span className="text-xs text-muted-foreground">
-                      {c.itemCount}
-                    </span>
-                  </Link>
-                </li>
-              ))}
-            </ul>
+            {recentCollections.length > 0 && (
+              <>
+                <p className="px-4 mt-3 mb-0.5 text-[11px] font-semibold text-muted-foreground uppercase tracking-wider">
+                  Recent
+                </p>
+                <ul className="space-y-0.5">
+                  {recentCollections.map((c) => (
+                    <li key={c.id}>
+                      <Link
+                        href={`/collections/${c.id}`}
+                        className="flex items-center gap-3 px-4 py-1.5 text-sm hover:bg-accent rounded-sm transition-colors"
+                      >
+                        <span className="flex-1 truncate">{c.name}</span>
+                        <span
+                          className="h-2.5 w-2.5 rounded-full shrink-0"
+                          style={{ backgroundColor: c.dominantColor }}
+                        />
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </>
+            )}
+
+            <div className="px-4 mt-3">
+              <Link
+                href="/collections"
+                className="flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                View all collections <ArrowRight className="h-3 w-3" />
+              </Link>
+            </div>
           </div>
         )}
       </nav>
@@ -174,14 +182,14 @@ export default function Sidebar({ collapsed, onToggle, isMobile }: SidebarProps)
         )}
       >
         <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0 text-sm font-medium">
-          {mockUser.name.charAt(0)}
+          D
         </div>
         {!collapsed && (
           <>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">{mockUser.name}</p>
+              <p className="text-sm font-medium truncate">Demo User</p>
               <p className="text-xs text-muted-foreground truncate">
-                {mockUser.email}
+                demo@devstash.io
               </p>
             </div>
             <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
