@@ -6,12 +6,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import Sidebar from "./Sidebar";
+import { SidebarData } from "@/lib/db/items";
 
 interface DashboardShellProps {
   children: React.ReactNode;
+  sidebarData: SidebarData;
 }
 
-export default function DashboardShell({ children }: DashboardShellProps) {
+export default function DashboardShell({ children, sidebarData }: DashboardShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -51,6 +53,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           <Sidebar
             collapsed={collapsed}
             onToggle={() => setCollapsed((c) => !c)}
+            sidebarData={sidebarData}
           />
         </div>
 
@@ -61,6 +64,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
               collapsed={false}
               onToggle={() => setMobileOpen(false)}
               isMobile
+              sidebarData={sidebarData}
             />
           </SheetContent>
         </Sheet>

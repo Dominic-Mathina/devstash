@@ -1,5 +1,24 @@
 import { prisma } from "@/lib/prisma";
 
+export interface SidebarItemType {
+  id: string;
+  name: string;
+  color: string;
+  count: number;
+}
+
+export interface SidebarCollection {
+  id: string;
+  name: string;
+  isFavorite: boolean;
+  dominantColor: string;
+}
+
+export interface SidebarData {
+  itemTypes: SidebarItemType[];
+  collections: SidebarCollection[];
+}
+
 export interface ItemType {
   id: string;
   name: string;
@@ -89,5 +108,57 @@ export async function getDashboardItems(): Promise<DashboardItems> {
     recent: recent.map(mapItem),
     totalCount,
     favoriteCount,
+  };
+}
+
+export async function getSidebarData(): Promise<SidebarData> {
+  const demoUser = await prisma.user.findUnique({
+    where: { email: "demo@devstash.io" },
+    select: { id: true },
+  });
+
+  if (!demoUser) return { itemTypes: [], collections: [] };
+
+  const [itemTypes, collections] = await Promise.all([
+    prisma.itemType.findMany({
+      where: { isSystem: true },
+      include: {
+        _count: {
+          select: { items: { where: { userId: demoUser.id } } },
+        },
+      },
+      orderBy: { name: "asc" },
+    }),
+    prisma.collection.findMany({
+      where: { userId: demoUser.id },
+      include: { items: { include: { type: true } } },
+      orderBy: [{ isFavorite: "desc" }, { updatedAt: "desc" }],
+    }),
+  ]);
+
+  return {
+    itemTypes: itemTypes.map((t) => ({
+      id: t.id,
+      name: t.name,
+      color: t.color ?? "#6b7280",
+      count: t._count.items,
+    })),
+    collections: collections.map((c) => {
+      const typeCounts = new Map<string, { count: number; color: string }>();
+      for (const item of c.items) {
+        const { id, color } = item.type;
+        const existing = typeCounts.get(id);
+        if (existing) existing.count++;
+        else typeCounts.set(id, { count: 1, color: color ?? "#6b7280" });
+      }
+      const dominantColor =
+        [...typeCounts.values()].sort((a, b) => b.count - a.count)[0]?.color ?? "#6b7280";
+      return {
+        id: c.id,
+        name: c.name,
+        isFavorite: c.isFavorite,
+        dominantColor,
+      };
+    }),
   };
 }
