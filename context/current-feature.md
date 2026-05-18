@@ -1,18 +1,20 @@
-# Current Feature
-
-## Stats & Sidebar — Live Data
-
-Replace mock stats and sidebar data with real data from the database.
-
-- Display stats (total items, favorites, etc.) from live DB data, keeping current design/layout
-- Display system item types in the sidebar with their icons, linking to `/items/[typename]`
-- Add "View all collections" link under the collections list that goes to `/collections`
-- Keep star icons for favorite collections; for recents, show a colored circle based on the most-used item type in that collection
-- Add any needed DB functions to `src/lib/db/items.ts` (reference `src/lib/db/collections.ts`)
+# Current Feature: Add Pro Badge to Sidebar
 
 ## Status
 
-Completed
+In Progress
+
+## Goals
+
+- Add a ShadCN UI badge component with "PRO" (uppercase) text to the sidebar
+- Add the Images item type to the sidebar item types list
+- Badge should be clean and subtle in appearance
+
+## Notes
+
+- Use the ShadCN `Badge` component
+- Badge styling should be subtle — not flashy or attention-grabbing
+- Images type should appear alongside the other system item types in the sidebar
 
 ## Previous Feature
 
