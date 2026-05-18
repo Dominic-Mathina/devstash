@@ -1,37 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import {
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  ImageIcon,
-  Link as LinkIcon,
-  PanelLeft,
-  Star,
-  Settings,
-  X,
-  ChevronDown,
-  ArrowRight,
-} from "lucide-react";
+import { PanelLeft, Star, Settings, X, ChevronDown, ArrowRight } from "lucide-react";
+import { useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { SidebarData } from "@/lib/db/items";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { getTypeIcon } from "@/lib/item-type-icons";
 
 const PRO_TYPES = new Set(["file", "image"]);
-
-const TYPE_ICONS: Record<string, React.ReactNode> = {
-  snippet: <Code className="h-4 w-4" />,
-  prompt: <Sparkles className="h-4 w-4" />,
-  command: <Terminal className="h-4 w-4" />,
-  note: <StickyNote className="h-4 w-4" />,
-  file: <File className="h-4 w-4" />,
-  image: <ImageIcon className="h-4 w-4" />,
-  link: <LinkIcon className="h-4 w-4" />,
-};
 
 interface SidebarProps {
   collapsed: boolean;
@@ -42,8 +20,8 @@ interface SidebarProps {
 
 export default function Sidebar({ collapsed, onToggle, isMobile, sidebarData }: SidebarProps) {
   const { itemTypes, collections } = sidebarData;
-  const favoriteCollections = collections.filter((c) => c.isFavorite);
-  const recentCollections = collections.filter((c) => !c.isFavorite);
+  const favoriteCollections = useMemo(() => collections.filter((c) => c.isFavorite), [collections]);
+  const recentCollections = useMemo(() => collections.filter((c) => !c.isFavorite), [collections]);
 
   return (
     <div
@@ -94,7 +72,7 @@ export default function Sidebar({ collapsed, onToggle, isMobile, sidebarData }: 
                   )}
                 >
                   <span style={{ color: type.color }}>
-                    {TYPE_ICONS[type.name]}
+                    {getTypeIcon(type.name)}
                   </span>
                   {!collapsed && (
                     <>

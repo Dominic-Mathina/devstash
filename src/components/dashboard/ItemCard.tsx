@@ -1,26 +1,6 @@
-import {
-  Star,
-  Pin,
-  MoreHorizontal,
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  ImageIcon,
-  Link as LinkIcon,
-} from "lucide-react";
+import { Star, Pin, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
-
-const TYPE_ICONS: Record<string, React.ReactNode> = {
-  snippet: <Code className="h-4 w-4" />,
-  prompt: <Sparkles className="h-4 w-4" />,
-  command: <Terminal className="h-4 w-4" />,
-  note: <StickyNote className="h-4 w-4" />,
-  file: <File className="h-4 w-4" />,
-  image: <ImageIcon className="h-4 w-4" />,
-  link: <LinkIcon className="h-4 w-4" />,
-};
+import { getTypeIcon } from "@/lib/item-type-icons";
 
 interface ItemType {
   id: string;
@@ -58,7 +38,7 @@ export default function ItemCard({ item, itemType }: ItemCardProps) {
           className="h-9 w-9 rounded-md flex items-center justify-center shrink-0 text-white mt-0.5"
           style={{ backgroundColor: itemType.color + "33", color: itemType.color }}
         >
-          {TYPE_ICONS[itemType.name]}
+          {getTypeIcon(itemType.name)}
         </div>
       )}
 

@@ -1,26 +1,7 @@
-import {
-  Star,
-  MoreHorizontal,
-  Code,
-  Sparkles,
-  Terminal,
-  StickyNote,
-  File,
-  ImageIcon,
-  Link as LinkIcon,
-} from "lucide-react";
+import { Star, MoreHorizontal } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { CollectionWithMeta } from "@/lib/db/collections";
-
-const TYPE_ICONS: Record<string, React.ReactNode> = {
-  snippet: <Code className="h-3 w-3" />,
-  prompt: <Sparkles className="h-3 w-3" />,
-  command: <Terminal className="h-3 w-3" />,
-  note: <StickyNote className="h-3 w-3" />,
-  file: <File className="h-3 w-3" />,
-  image: <ImageIcon className="h-3 w-3" />,
-  link: <LinkIcon className="h-3 w-3" />,
-};
+import { getTypeIcon } from "@/lib/item-type-icons";
 
 export default function CollectionCard({ collection }: { collection: CollectionWithMeta }) {
   return (
@@ -53,7 +34,7 @@ export default function CollectionCard({ collection }: { collection: CollectionW
               style={{ color: type.color }}
               title={type.name}
             >
-              {TYPE_ICONS[type.name]}
+              {getTypeIcon(type.name, "h-3 w-3")}
             </span>
           ))}
         </div>
