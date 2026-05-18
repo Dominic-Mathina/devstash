@@ -19,6 +19,9 @@ import {
 import { cn } from "@/lib/utils";
 import { SidebarData } from "@/lib/db/items";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+
+const PRO_TYPES = new Set(["file", "image"]);
 
 const TYPE_ICONS: Record<string, React.ReactNode> = {
   snippet: <Code className="h-4 w-4" />,
@@ -96,9 +99,15 @@ export default function Sidebar({ collapsed, onToggle, isMobile, sidebarData }: 
                   {!collapsed && (
                     <>
                       <span className="flex-1 capitalize">{type.name}s</span>
-                      <span className="text-xs text-muted-foreground">
-                        {type.count}
-                      </span>
+                      {PRO_TYPES.has(type.name) ? (
+                        <Badge variant="outline" className="h-4 px-1 text-[10px] font-semibold text-muted-foreground border-muted-foreground/30">
+                          PRO
+                        </Badge>
+                      ) : (
+                        <span className="text-xs text-muted-foreground">
+                          {type.count}
+                        </span>
+                      )}
                     </>
                   )}
                 </Link>
