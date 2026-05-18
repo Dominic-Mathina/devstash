@@ -1,20 +1,16 @@
-# Current Feature: Add Pro Badge to Sidebar
+# Current Feature
 
 ## Status
 
-In Progress
+<!-- Not Started | In Progress | Completed -->
 
 ## Goals
 
-- Add a ShadCN UI badge component with "PRO" (uppercase) text to the sidebar
-- Add the Images item type to the sidebar item types list
-- Badge should be clean and subtle in appearance
+<!-- Bullet points of what success looks like -->
 
 ## Notes
 
-- Use the ShadCN `Badge` component
-- Badge styling should be subtle — not flashy or attention-grabbing
-- Images type should appear alongside the other system item types in the sidebar
+<!-- Additional context, constraints, or details -->
 
 ## Previous Feature
 
@@ -64,3 +60,4 @@ Replace dummy collection data in the dashboard main area with real data from the
 - **Completed Dashboard Collections Live Data** — `src/lib/db/collections.ts` with `getCollections()`; dashboard page now async with real DB data; collection cards show dominant-type left border color and per-type icons at bottom; collection stats reflect real counts
 - **Completed Dashboard Items Live Data** — `src/lib/db/items.ts` with `getDashboardItems()`; pinned and recent items fetched from DB; tags flattened from relations; item card icon/border from real item type; pinned section hidden when empty; stats (total, favorites) from live counts
 - **Completed Stats & Sidebar Live Data** — `getSidebarData()` added to `src/lib/db/items.ts`; sidebar item types with live counts link to `/items/[typename]`; favorite collections show star, recent collections show dominant-type color dot; "View all collections" link added; mock data fully removed from sidebar
+- **Completed Add Pro Badge to Sidebar** — ShadCN `Badge` component added; file and image item types in the sidebar now display a subtle outline PRO badge instead of their item count
