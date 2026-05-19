@@ -2,15 +2,15 @@
 
 ## Status
 
-<!-- Not Started | In Progress | Completed -->
+Not Started
 
 ## Goals
 
-<!-- Bullet points of what success looks like -->
+<!-- Add goals here -->
 
 ## Notes
 
-<!-- Additional context, constraints, or details -->
+<!-- Add notes here -->
 
 ## Previous Feature
 
@@ -62,3 +62,4 @@ Replace dummy collection data in the dashboard main area with real data from the
 - **Completed Stats & Sidebar Live Data** — `getSidebarData()` added to `src/lib/db/items.ts`; sidebar item types with live counts link to `/items/[typename]`; favorite collections show star, recent collections show dominant-type color dot; "View all collections" link added; mock data fully removed from sidebar
 - **Completed Add Pro Badge to Sidebar** — ShadCN `Badge` component added; file and image item types in the sidebar now display a subtle outline PRO badge instead of their item count
 - **Completed Code Scan Quick Wins** — `TYPE_ICONS` extracted to `src/lib/item-type-icons.tsx` with `getTypeIcon(name, className)` factory and File fallback for unknown types; `DATABASE_URL` startup guard added to `prisma.ts`; sidebar collection filters wrapped in `useMemo`; `src/app/dashboard/loading.tsx` skeleton added
+- **Completed Auth — NextAuth v5 + GitHub OAuth + Email/Password Credentials** — split config pattern (`auth.config.ts` edge-safe, `auth.ts` full Node.js); GitHub OAuth + Credentials provider; PrismaAdapter with JWT strategy; `/dashboard` protected via `proxy.ts` (Next.js 16); `POST /api/auth/register` with bcryptjs (named imports for v3 ESM); Credentials kept only in `auth.ts` to avoid placeholder/real `authorize` conflict causing `Configuration` error
