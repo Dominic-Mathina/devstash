@@ -7,13 +7,15 @@ import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent } from "@/components/ui/sheet";
 import Sidebar from "./Sidebar";
 import { SidebarData } from "@/lib/db/items";
+import type { User } from "next-auth";
 
 interface DashboardShellProps {
   children: React.ReactNode;
   sidebarData: SidebarData;
+  user: (User & { id: string }) | null;
 }
 
-export default function DashboardShell({ children, sidebarData }: DashboardShellProps) {
+export default function DashboardShell({ children, sidebarData, user }: DashboardShellProps) {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
 
@@ -54,6 +56,7 @@ export default function DashboardShell({ children, sidebarData }: DashboardShell
             collapsed={collapsed}
             onToggle={() => setCollapsed((c) => !c)}
             sidebarData={sidebarData}
+            user={user}
           />
         </div>
 
@@ -65,6 +68,7 @@ export default function DashboardShell({ children, sidebarData }: DashboardShell
               onToggle={() => setMobileOpen(false)}
               isMobile
               sidebarData={sidebarData}
+              user={user}
             />
           </SheetContent>
         </Sheet>
