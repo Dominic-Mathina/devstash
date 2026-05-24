@@ -1,33 +1,32 @@
-# Current Feature: Auth UI — Sign In, Register & Sign Out
+# Current Feature
 
 ## Status
 
-In Progress
+Not Started
 
 ## Goals
 
-- Create custom `/sign-in` page with email/password fields, GitHub OAuth button, and link to register
-- Create custom `/register` page with name/email/password/confirm-password fields, validation, and redirect to sign-in on success
-- Display user avatar, name, and sign-out dropdown at the bottom of the sidebar
-- Reusable avatar component: GitHub image if available, else initials fallback (e.g., "Brad Traversy" → "BT")
-- Sign-out dropdown appears on avatar click; clicking avatar/name navigates to `/profile`
+<!-- Add goals here -->
 
 ## Notes
 
-- Sign-in: email + password fields, "Sign in with GitHub" button, link to `/register`, form validation + error display
-- Register: submit to `POST /api/auth/register`, redirect to `/sign-in` on success, validate passwords match and email format
-- Avatar logic: use `session.user.image` (GitHub) if present, otherwise generate initials from `session.user.name`
-- Sidebar bottom: avatar, username, dropdown/popover with "Sign out" link
+<!-- Add notes here -->
 
-## Testing
+## Previous Feature
 
-1. Go to `/sign-in` — verify custom page renders
-2. Sign in with GitHub — verify OAuth flow works
-3. Sign in with email/password — verify credentials flow works
-4. Verify avatar shows in sidebar (GitHub image or initials)
-5. Click avatar — verify dropdown appears with "Sign out"
-6. Click "Sign out" — verify logout and redirect
-7. Go to `/register` — create new account — verify redirect to sign-in
+### Auth UI — Sign In, Register & Sign Out
+
+Replace NextAuth default pages with custom UI and update the sidebar user area.
+
+- Custom `/sign-in` page: email/password + GitHub OAuth, server-rendered with server actions
+- Custom `/register` page: name/email/password/confirm, server-side validation
+- `UserAvatar` component: GitHub image or generated initials fallback
+- Sidebar bottom: real session user name/email/avatar, dropdown with Profile and Sign out
+- `auth.config.ts` `pages.signIn` set to `/sign-in`; proxy redirect updated
+- `next.config.ts`: `avatars.githubusercontent.com` added to image `remotePatterns`
+- `dropdown-menu` shadcn component added
+
+**Status: Completed**
 
 ## Previous Feature
 
@@ -42,22 +41,6 @@ Replace dummy item data in the dashboard main area (pinned and recent items) wit
 - If there are no pinned items, hide the pinned section entirely
 - Keep existing design (reference `context/screenshots/dashboard-ui-main.png`)
 - Update collection stats display
-
-**Status: Completed**
-
-## Previous Feature
-
-### Dashboard Collections — Live Data
-
-Replace dummy collection data in the dashboard main area with real data from the Neon database via Prisma.
-
-- Create `src/lib/db/collections.ts` with data fetching functions
-- Fetch collections in a server component (no mock data)
-- Derive collection card border color from the most-used content type in that collection
-- Show small icons of all types present in each collection
-- Keep existing design (reference `context/screenshots/dashboard-ui-main.png`)
-- Update collection stats display
-- Do NOT add items underneath collections yet
 
 **Status: Completed**
 
@@ -80,3 +63,4 @@ Replace dummy collection data in the dashboard main area with real data from the
 - **Completed Add Pro Badge to Sidebar** — ShadCN `Badge` component added; file and image item types in the sidebar now display a subtle outline PRO badge instead of their item count
 - **Completed Code Scan Quick Wins** — `TYPE_ICONS` extracted to `src/lib/item-type-icons.tsx` with `getTypeIcon(name, className)` factory and File fallback for unknown types; `DATABASE_URL` startup guard added to `prisma.ts`; sidebar collection filters wrapped in `useMemo`; `src/app/dashboard/loading.tsx` skeleton added
 - **Completed Auth — NextAuth v5 + GitHub OAuth + Email/Password Credentials** — split config pattern (`auth.config.ts` edge-safe, `auth.ts` full Node.js); GitHub OAuth + Credentials provider; PrismaAdapter with JWT strategy; `/dashboard` protected via `proxy.ts` (Next.js 16); `POST /api/auth/register` with bcryptjs (named imports for v3 ESM); Credentials kept only in `auth.ts` to avoid placeholder/real `authorize` conflict causing `Configuration` error
+- **Completed Auth UI — Sign In, Register & Sign Out** — custom `/sign-in` and `/register` server-rendered pages with server actions; `UserAvatar` component (GitHub image or initials); sidebar bottom shows real session user with sign-out dropdown; `pages.signIn` configured; GitHub avatar image host added to `next.config.ts`
