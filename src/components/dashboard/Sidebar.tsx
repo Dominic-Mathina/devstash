@@ -1,13 +1,23 @@
 "use client";
 
 import Link from "next/link";
-import { PanelLeft, Star, Settings, X, ChevronDown, ArrowRight } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { PanelLeft, Star, X, ChevronDown, ArrowRight, LogOut } from "lucide-react";
 import { useMemo } from "react";
+import { signOut } from "next-auth/react";
+import type { User } from "next-auth";
 import { cn } from "@/lib/utils";
 import { SidebarData } from "@/lib/db/items";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { getTypeIcon } from "@/lib/item-type-icons";
+import UserAvatar from "@/components/UserAvatar";
 
 const PRO_TYPES = new Set(["file", "image"]);
 
@@ -16,9 +26,11 @@ interface SidebarProps {
   onToggle: () => void;
   isMobile?: boolean;
   sidebarData: SidebarData;
+  user: (User & { id: string }) | null;
 }
 
-export default function Sidebar({ collapsed, onToggle, isMobile, sidebarData }: SidebarProps) {
+export default function Sidebar({ collapsed, onToggle, isMobile, sidebarData, user }: SidebarProps) {
+  const router = useRouter();
   const { itemTypes, collections } = sidebarData;
   const favoriteCollections = useMemo(() => collections.filter((c) => c.isFavorite), [collections]);
   const recentCollections = useMemo(() => collections.filter((c) => !c.isFavorite), [collections]);
@@ -162,28 +174,35 @@ export default function Sidebar({ collapsed, onToggle, isMobile, sidebarData }: 
       </nav>
 
       {/* User area */}
-      <div
-        className={cn(
-          "border-t p-3 flex items-center gap-3 shrink-0",
-          collapsed && "justify-center"
-        )}
-      >
-        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center shrink-0 text-sm font-medium">
-          D
-        </div>
-        {!collapsed && (
-          <>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium truncate">Demo User</p>
-              <p className="text-xs text-muted-foreground truncate">
-                demo@devstash.io
-              </p>
-            </div>
-            <Button variant="ghost" size="icon" className="h-7 w-7 shrink-0">
-              <Settings className="h-4 w-4" />
-            </Button>
-          </>
-        )}
+      <div className="border-t p-3 shrink-0">
+        <DropdownMenu>
+          <DropdownMenuTrigger
+            className={cn(
+              "flex items-center gap-3 w-full rounded-md hover:bg-accent transition-colors p-1 text-left",
+              collapsed && "justify-center"
+            )}
+          >
+            <UserAvatar name={user?.name} image={user?.image} />
+            {!collapsed && (
+              <div className="flex-1 min-w-0">
+                <p className="text-sm font-medium truncate">{user?.name ?? "User"}</p>
+                <p className="text-xs text-muted-foreground truncate">{user?.email ?? ""}</p>
+              </div>
+            )}
+          </DropdownMenuTrigger>
+          <DropdownMenuContent side="top" align={collapsed ? "center" : "end"} className="w-48">
+            <DropdownMenuItem onClick={() => router.push("/profile")}>
+              Profile
+            </DropdownMenuItem>
+            <DropdownMenuItem
+              variant="destructive"
+              onClick={() => signOut({ callbackUrl: "/sign-in" })}
+            >
+              <LogOut className="h-4 w-4" />
+              Sign out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </div>
   );
