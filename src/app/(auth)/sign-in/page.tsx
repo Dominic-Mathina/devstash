@@ -3,20 +3,22 @@ import { LayoutGrid } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { signInWithCredentials, signInWithGitHub } from "./actions";
+import { RegisteredToast } from "./registered-toast";
 
 const ERROR_MESSAGES: Record<string, string> = {
   credentials: "Invalid email or password.",
 };
 
 interface Props {
-  searchParams: Promise<{ error?: string; callbackUrl?: string }>;
+  searchParams: Promise<{ error?: string; callbackUrl?: string; registered?: string }>;
 }
 
 export default async function SignInPage({ searchParams }: Props) {
-  const { error, callbackUrl = "/dashboard" } = await searchParams;
+  const { error, callbackUrl = "/dashboard", registered } = await searchParams;
 
   return (
     <div className="w-full max-w-sm space-y-6">
+      {registered && <RegisteredToast />}
       <div className="flex flex-col items-center gap-2 text-center">
         <div className="h-10 w-10 rounded-lg bg-primary flex items-center justify-center">
           <LayoutGrid className="h-5 w-5 text-primary-foreground" />

@@ -28,5 +28,5 @@ export async function registerAction(formData: FormData) {
   const hashed = await hash(password, 12)
   await prisma.user.create({ data: { name, email, password: hashed } })
 
-  redirect("/sign-in")
+  redirect("/sign-in?registered=true")
 }
